@@ -1,0 +1,1148 @@
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nextwave BD — Team Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #080a10;
+  --surface: #0e1119;
+  --surface2: #141720;
+  --border: #1e2235;
+  --accent: #00d4ff;
+  --accent2: #7c3aed;
+  --accent3: #f0a500;
+  --text: #e2e8f8;
+  --muted: #4a5270;
+  --green: #00e5a0;
+  --red: #ff4d6a;
+  --blue: #3b82f6;
+  --gold: #f0a500;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+h1,h2,h3,h4 { font-family:'Syne',sans-serif; }
+
+/* ════════════════════════════════
+   FUTURISTIC LOGIN
+════════════════════════════════ */
+#login-page {
+  display:flex; min-height:100vh; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+
+/* animated grid */
+.login-grid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation: gridScroll 20s linear infinite;
+}
+@keyframes gridScroll { from{background-position:0 0} to{background-position:60px 60px} }
+
+/* corner scanlines */
+.scanline {
+  position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.015) 2px, rgba(0,212,255,0.015) 4px);
+}
+
+/* glow orbs */
+.orb { position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none; }
+.orb1 { width:500px; height:500px; background:rgba(0,212,255,0.07); top:-100px; left:-150px; animation:orbFloat 8s ease-in-out infinite; }
+.orb2 { width:400px; height:400px; background:rgba(124,58,237,0.07); bottom:-100px; right:-100px; animation:orbFloat 10s ease-in-out infinite reverse; }
+.orb3 { width:300px; height:300px; background:rgba(240,165,0,0.05); top:50%; left:50%; transform:translate(-50%,-50%); animation:orbFloat 6s ease-in-out infinite 2s; }
+@keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.05)} }
+
+/* floating particles */
+.particles { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.particle {
+  position:absolute; width:2px; height:2px; border-radius:50%;
+  background:var(--accent); opacity:0;
+  animation: particleFly var(--dur,6s) linear infinite var(--delay,0s);
+}
+@keyframes particleFly {
+  0% { transform:translateY(100vh) translateX(0); opacity:0; }
+  10% { opacity:0.6; }
+  90% { opacity:0.4; }
+  100% { transform:translateY(-20px) translateX(var(--drift,20px)); opacity:0; }
+}
+
+/* corner decorations */
+.corner { position:absolute; width:60px; height:60px; pointer-events:none; }
+.corner-tl { top:20px; left:20px; border-top:2px solid var(--accent); border-left:2px solid var(--accent); opacity:0.4; }
+.corner-tr { top:20px; right:20px; border-top:2px solid var(--accent); border-right:2px solid var(--accent); opacity:0.4; }
+.corner-bl { bottom:20px; left:20px; border-bottom:2px solid var(--accent); border-left:2px solid var(--accent); opacity:0.4; }
+.corner-br { bottom:20px; right:20px; border-bottom:2px solid var(--accent); border-right:2px solid var(--accent); opacity:0.4; }
+
+/* login card */
+.login-box {
+  position:relative; z-index:10;
+  background:rgba(14,17,25,0.85);
+  border:1px solid rgba(0,212,255,0.2);
+  border-radius:20px;
+  padding:48px 44px;
+  width:440px; max-width:95vw;
+  box-shadow:0 0 60px rgba(0,212,255,0.08), 0 40px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+  backdrop-filter:blur(20px);
+  animation: loginAppear 0.6s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes loginAppear { from{opacity:0;transform:translateY(30px) scale(0.96)} to{opacity:1;transform:none} }
+
+/* top accent line */
+.login-box::before {
+  content:''; position:absolute; top:0; left:20%; right:20%; height:2px;
+  background:linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+  border-radius:2px;
+}
+
+.login-brand { text-align:center; margin-bottom:36px; }
+.login-brand-icon {
+  width:70px; height:70px; margin:0 auto 16px;
+  border-radius:18px;
+  background:linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
+  border:1px solid rgba(0,212,255,0.3);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Orbitron',sans-serif; font-weight:900; font-size:24px;
+  color:var(--accent);
+  box-shadow:0 0 30px rgba(0,212,255,0.15);
+  position:relative;
+}
+.login-brand-icon::after {
+  content:''; position:absolute; inset:-4px; border-radius:22px;
+  border:1px solid rgba(0,212,255,0.1);
+  animation:iconPulse 2s ease-in-out infinite;
+}
+@keyframes iconPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(1.05)} }
+
+.login-brand-name { font-family:'Orbitron',sans-serif; font-weight:700; font-size:20px; letter-spacing:0.1em; }
+.login-brand-name span { color:var(--accent); }
+.login-brand-sub { font-size:11px; color:var(--muted); letter-spacing:0.2em; text-transform:uppercase; margin-top:4px; }
+
+.login-divider { display:flex; align-items:center; gap:12px; margin-bottom:28px; }
+.login-divider::before, .login-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.login-divider span { font-size:11px; color:var(--muted); letter-spacing:0.1em; }
+
+.field-wrap { margin-bottom:18px; position:relative; }
+.field-wrap label {
+  display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.12em;
+  color:var(--accent); margin-bottom:8px; font-weight:600;
+}
+.field-wrap input {
+  width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--border);
+  border-radius:10px; padding:13px 16px 13px 44px;
+  color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px;
+  outline:none; transition:all 0.2s;
+}
+.field-wrap input:focus { border-color:var(--accent); background:rgba(0,212,255,0.04); box-shadow:0 0 20px rgba(0,212,255,0.08); }
+.field-wrap input::placeholder { color:var(--muted); }
+.field-icon {
+  position:absolute; left:14px; top:38px;
+  color:var(--muted); transition:color 0.2s; pointer-events:none;
+}
+.field-wrap input:focus ~ .field-icon, .field-wrap:focus-within .field-icon { color:var(--accent); }
+
+.login-error {
+  background:rgba(255,77,106,0.08); border:1px solid rgba(255,77,106,0.25);
+  border-radius:8px; padding:10px 14px; font-size:13px; color:var(--red);
+  margin-bottom:16px; display:none; text-align:center;
+}
+
+.btn-login {
+  width:100%; position:relative; overflow:hidden;
+  background:transparent;
+  border:1px solid var(--accent);
+  border-radius:10px; padding:15px;
+  color:var(--accent); font-family:'Orbitron',sans-serif; font-weight:700; font-size:13px;
+  letter-spacing:0.15em; cursor:pointer; transition:all 0.3s;
+}
+.btn-login::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  opacity:0; transition:opacity 0.3s;
+}
+.btn-login:hover { color:#fff; box-shadow:0 0 30px rgba(0,212,255,0.25); }
+.btn-login:hover::before { opacity:1; }
+.btn-login span { position:relative; z-index:1; }
+
+.login-footer { text-align:center; margin-top:24px; font-size:11px; color:var(--muted); letter-spacing:0.05em; }
+.login-sys-info {
+  position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+  font-family:'Orbitron',sans-serif; font-size:9px; color:rgba(0,212,255,0.2);
+  letter-spacing:0.15em; white-space:nowrap;
+}
+
+/* status bar inside login */
+.login-status-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:24px; padding:8px 12px;
+  background:rgba(0,229,160,0.04); border:1px solid rgba(0,229,160,0.1); border-radius:8px;
+  font-size:11px;
+}
+.status-indicator { display:flex; align-items:center; gap:6px; color:var(--green); }
+.status-blink { width:6px; height:6px; border-radius:50%; background:var(--green); animation:blink 1.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.login-status-bar span { color:var(--muted); font-size:10px; }
+
+/* ════════════════════════════════
+   APP SHELL
+════════════════════════════════ */
+#app { display:none; min-height:100vh; }
+
+.sidebar {
+  position:fixed; left:0; top:0; bottom:0; width:240px;
+  background:var(--surface); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; z-index:100;
+}
+.sidebar-logo { padding:22px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+.logo-mark {
+  width:36px; height:36px; border-radius:9px;
+  background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(124,58,237,0.2));
+  border:1px solid rgba(0,212,255,0.3);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Orbitron',sans-serif; font-weight:900; font-size:14px; color:var(--accent);
+}
+.logo-text { font-family:'Orbitron',sans-serif; font-weight:700; font-size:13px; letter-spacing:0.08em; }
+.logo-text span { color:var(--accent); }
+
+.nav-section { padding:16px 10px 8px; flex:1; }
+.nav-label { font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); padding:0 8px; margin-bottom:6px; }
+.nav-item {
+  display:flex; align-items:center; gap:11px; padding:10px 12px;
+  border-radius:10px; cursor:pointer; color:var(--muted);
+  font-size:14px; font-weight:500; transition:all 0.15s; margin-bottom:3px;
+}
+.nav-item:hover { background:var(--surface2); color:var(--text); }
+.nav-item.active { background:rgba(0,212,255,0.08); color:var(--accent); border-left:2px solid var(--accent); padding-left:10px; }
+.nav-icon { width:17px; height:17px; flex-shrink:0; }
+.admin-badge {
+  display:inline-block; padding:1px 6px; border-radius:4px;
+  background:rgba(240,165,0,0.15); color:var(--gold);
+  font-size:9px; font-weight:700; letter-spacing:0.08em; margin-left:auto;
+}
+
+.sidebar-user { padding:14px 18px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+.user-avatar {
+  width:34px; height:34px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:#fff; flex-shrink:0;
+}
+.user-info { flex:1; min-width:0; }
+.user-name { font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.user-role { font-size:10px; color:var(--muted); }
+.logout-btn { background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; border-radius:6px; transition:color 0.15s; }
+.logout-btn:hover { color:var(--red); }
+
+.main-content { margin-left:240px; padding:32px; min-height:100vh; }
+.page { display:none; }
+.page.active { display:block; animation:fadeIn 0.25s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+/* ─── SHARED ─── */
+.page-header { margin-bottom:26px; }
+.page-title { font-size:24px; font-weight:800; }
+.page-sub { color:var(--muted); font-size:14px; margin-top:4px; }
+.badge-admin { display:inline-block; padding:2px 10px; border-radius:20px; background:rgba(240,165,0,0.12); color:var(--gold); font-size:11px; font-weight:700; margin-left:10px; vertical-align:middle; }
+
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:28px; }
+.stat-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; }
+.stat-label { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:10px; }
+.stat-value { font-family:'Syne',sans-serif; font-size:30px; font-weight:800; }
+.stat-badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; margin-top:6px; }
+
+/* ─── ADMIN PERF TABLE ─── */
+.perf-table { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-top:20px; }
+.perf-table table { width:100%; border-collapse:collapse; }
+.perf-table th { background:var(--surface2); text-align:left; padding:12px 16px; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); }
+.perf-table td { padding:13px 16px; border-top:1px solid var(--border); font-size:13px; vertical-align:middle; }
+.member-cell { display:flex; align-items:center; gap:10px; }
+.member-av { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; flex-shrink:0; }
+.prog-bar-wrap { background:var(--surface2); border-radius:4px; height:6px; width:100px; overflow:hidden; }
+.prog-bar { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+.online-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
+
+/* ─── KANBAN ─── */
+.board-controls { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+.btn-add {
+  display:flex; align-items:center; gap:8px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none; border-radius:10px; padding:10px 18px;
+  color:#fff; font-family:'Syne',sans-serif; font-weight:600; font-size:14px;
+  cursor:pointer; transition:opacity 0.2s;
+}
+.btn-add:hover { opacity:0.85; }
+
+.board { display:flex; gap:14px; overflow-x:auto; padding-bottom:16px; align-items:flex-start; }
+.board::-webkit-scrollbar { height:5px; }
+.board::-webkit-scrollbar-track { background:var(--surface); border-radius:3px; }
+.board::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+.column { background:var(--surface); border:1px solid var(--border); border-radius:14px; width:272px; min-width:272px; padding:14px; }
+.col-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.col-title-wrap { display:flex; align-items:center; gap:8px; }
+.col-dot { width:9px; height:9px; border-radius:50%; }
+.col-title { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; }
+.col-count { background:var(--surface2); border-radius:20px; padding:2px 8px; font-size:11px; color:var(--muted); }
+.add-card-btn { background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; border-radius:6px; transition:color 0.15s; font-size:18px; line-height:1; }
+.add-card-btn:hover { color:var(--text); }
+
+.cards { display:flex; flex-direction:column; gap:9px; min-height:40px; }
+.card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:13px; transition:box-shadow 0.15s,transform 0.15s; position:relative; cursor:pointer; }
+.card:hover { box-shadow:0 4px 20px rgba(0,0,0,0.4); transform:translateY(-1px); }
+.card.dragging { opacity:0.4; cursor:grabbing; }
+.card-tag { display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:500; margin-bottom:7px; }
+.card-title { font-size:13px; font-weight:500; margin-bottom:8px; line-height:1.4; }
+.card-meta { display:flex; align-items:center; justify-content:space-between; }
+.card-assignee { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:#fff; }
+.card-date { font-size:11px; color:var(--muted); }
+.card-footer { display:flex; align-items:center; gap:10px; margin-top:8px; padding-top:8px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); }
+.card-footer span { display:flex; align-items:center; gap:4px; }
+.card-delete { position:absolute; top:8px; right:8px; background:none; border:none; color:var(--muted); cursor:pointer; opacity:0; transition:opacity 0.15s; font-size:13px; }
+.card:hover .card-delete { opacity:1; }
+.card-delete:hover { color:var(--red); }
+.drag-over { background:rgba(0,212,255,0.04); border-color:var(--accent); }
+
+/* ─── TASK DETAIL MODAL ─── */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); display:none; align-items:center; justify-content:center; z-index:1000; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px; width:560px; max-width:96vw; max-height:90vh; overflow-y:auto; }
+.modal-title { font-family:'Syne',sans-serif; font-weight:700; font-size:17px; margin-bottom:18px; }
+.modal-group { margin-bottom:14px; }
+.modal-group label { display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:7px; }
+.modal-group input, .modal-group select, .modal-group textarea {
+  width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px;
+  padding:10px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s;
+}
+.modal-group input:focus, .modal-group select:focus, .modal-group textarea:focus { border-color:var(--accent); }
+.modal-group select option { background:var(--surface); }
+.modal-group textarea { resize:vertical; min-height:70px; }
+.modal-actions { display:flex; gap:10px; margin-top:20px; justify-content:flex-end; }
+.btn-cancel { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 16px; color:var(--text); font-family:'Syne',sans-serif; font-weight:600; font-size:13px; cursor:pointer; }
+.btn-save { background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; border-radius:8px; padding:9px 16px; color:#fff; font-family:'Syne',sans-serif; font-weight:600; font-size:13px; cursor:pointer; }
+
+/* task detail view */
+.task-detail-section { margin-bottom:20px; }
+.task-detail-section h4 { font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:10px; }
+.task-desc { font-size:14px; color:var(--text); line-height:1.6; background:var(--surface2); border-radius:8px; padding:12px; min-height:60px; }
+.attachment-list { display:flex; flex-direction:column; gap:8px; }
+.attachment-item { display:flex; align-items:center; gap:10px; background:var(--surface2); border-radius:8px; padding:10px 12px; font-size:13px; }
+.attachment-item span { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.attachment-item .att-size { color:var(--muted); font-size:11px; flex-shrink:0; }
+.upload-btn { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px dashed var(--border); border-radius:8px; padding:10px 14px; color:var(--muted); font-size:13px; cursor:pointer; transition:all 0.2s; width:100%; }
+.upload-btn:hover { border-color:var(--accent); color:var(--accent); }
+#file-input { display:none; }
+.comment-list { display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+.comment-item { background:var(--surface2); border-radius:8px; padding:11px 13px; }
+.comment-author { font-size:11px; font-weight:600; color:var(--accent); margin-bottom:4px; }
+.comment-text { font-size:13px; line-height:1.5; }
+.comment-time { font-size:10px; color:var(--muted); margin-top:4px; }
+.comment-input-wrap { display:flex; gap:8px; }
+.comment-input-wrap input { flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s; }
+.comment-input-wrap input:focus { border-color:var(--accent); }
+.btn-comment { background:var(--accent); border:none; border-radius:8px; padding:9px 14px; color:var(--bg); font-weight:700; font-size:13px; cursor:pointer; white-space:nowrap; }
+
+/* ─── ATTENDANCE ─── */
+.attendance-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px; }
+.checkin-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:26px; display:flex; flex-direction:column; align-items:center; text-align:center; }
+.clock-display { font-family:'Orbitron',sans-serif; font-size:42px; font-weight:700; letter-spacing:0.05em; margin:14px 0; color:var(--accent); text-shadow:0 0 20px rgba(0,212,255,0.3); }
+.timer-display { font-family:'Orbitron',sans-serif; font-size:32px; font-weight:700; color:var(--green); margin:6px 0 14px; text-shadow:0 0 15px rgba(0,229,160,0.3); }
+.status-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border-radius:20px; font-size:12px; font-weight:500; margin-bottom:18px; }
+.status-badge.out { background:rgba(255,77,106,0.1); color:var(--red); }
+.status-badge.in { background:rgba(0,229,160,0.1); color:var(--green); }
+.status-dot { width:7px; height:7px; border-radius:50%; background:currentColor; animation:pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.btn-checkin { background:var(--green); border:none; border-radius:12px; padding:13px 32px; color:var(--bg); font-family:'Syne',sans-serif; font-weight:700; font-size:14px; cursor:pointer; transition:opacity 0.2s; width:100%; }
+.btn-checkin:hover { opacity:0.85; }
+.btn-checkout { background:var(--red); border:none; border-radius:12px; padding:13px 32px; color:#fff; font-family:'Syne',sans-serif; font-weight:700; font-size:14px; cursor:pointer; transition:opacity 0.2s; width:100%; margin-top:10px; }
+.btn-checkout:hover { opacity:0.85; }
+.log-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px; }
+.log-title { font-family:'Syne',sans-serif; font-weight:700; font-size:15px; margin-bottom:14px; }
+.log-item { display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.log-item:last-child { border-bottom:none; }
+.log-type { display:flex; align-items:center; gap:8px; }
+.log-duration { font-family:'Syne',sans-serif; font-weight:600; color:var(--accent); font-size:12px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     FUTURISTIC LOGIN PAGE
+════════════════════════════════ -->
+<div id="login-page">
+  <div class="login-grid"></div>
+  <div class="scanline"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="particles" id="particles"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <div class="login-box">
+    <div class="login-brand">
+      <div class="login-brand-icon">N</div>
+      <div class="login-brand-name">NEXTWAVE <span>BD</span></div>
+      <div class="login-brand-sub">Team Operations Portal</div>
+    </div>
+
+    <div class="login-status-bar">
+      <div class="status-indicator"><span class="status-blink"></span> System Online</div>
+      <span id="login-clock-small">--:--:--</span>
+    </div>
+
+    <div class="login-divider"><span>AUTHENTICATE</span></div>
+
+    <div class="login-error" id="login-error">⚠ Access denied. Invalid credentials.</div>
+
+    <div class="field-wrap">
+      <label>Identifier</label>
+      <input type="email" id="login-email" placeholder="your@nextwavebd.com" autocomplete="email"/>
+      <svg class="field-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </div>
+
+    <div class="field-wrap">
+      <label>Access Key</label>
+      <input type="password" id="login-pass" placeholder="••••••••••"/>
+      <svg class="field-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    </div>
+
+    <button class="btn-login" onclick="doLogin()"><span>▶ ENTER PORTAL</span></button>
+    <div class="login-footer">Restricted access · Nextwave Bangladesh internal use only</div>
+  </div>
+
+  <div class="login-sys-info">SYS:NW-BD-PORTAL · v2.0 · SECURE CHANNEL</div>
+</div>
+
+<!-- ════════════════════════════════
+     APP SHELL
+════════════════════════════════ -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">N</div>
+      <div class="logo-text">NEXT<span>WAVE</span></div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Navigation</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+        <span class="admin-badge" id="nav-admin-badge" style="display:none">ADMIN</span>
+      </div>
+      <div class="nav-item" onclick="showPage('projects',this)">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Projects
+      </div>
+      <div class="nav-item" onclick="showPage('attendance',this)">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Attendance
+      </div>
+      <div class="nav-item" onclick="showPage('team',this)">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        Team
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-avatar">LH</div>
+      <div class="user-info">
+        <div class="user-name" id="sidebar-name">—</div>
+        <div class="user-role" id="sidebar-role">Member</div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()" title="Logout">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h1 class="page-title" id="dash-title">Dashboard</h1>
+        <p class="page-sub" id="dash-greeting">Welcome back!</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Active Tasks</div>
+          <div class="stat-value" id="stat-projects">0</div>
+          <span class="stat-badge" style="background:rgba(59,130,246,0.1);color:var(--blue)">Open</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Team Size</div>
+          <div class="stat-value">7</div>
+          <span class="stat-badge" style="background:rgba(0,229,160,0.1);color:var(--green)">Full crew</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Today's Status</div>
+          <div class="stat-value" id="stat-status" style="font-size:20px;margin-top:4px;">Not checked in</div>
+          <span class="stat-badge" id="stat-status-badge" style="background:rgba(255,77,106,0.1);color:var(--red)">Offline</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Hours Logged</div>
+          <div class="stat-value" id="stat-hours">0h 0m</div>
+          <span class="stat-badge" style="background:rgba(240,165,0,0.1);color:var(--gold)">Today</span>
+        </div>
+      </div>
+
+      <!-- ADMIN ONLY: team performance -->
+      <div id="admin-perf-section" style="display:none">
+        <h3 style="font-size:16px;margin-bottom:14px;font-family:'Syne',sans-serif;">Team Performance Overview <span class="badge-admin">ADMIN VIEW</span></h3>
+        <div class="perf-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Role</th>
+                <th>Today</th>
+                <th>Tasks Done</th>
+                <th>Check-in</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="perf-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Non-admin quick links -->
+      <div id="member-quicklinks">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;">
+          <h3 style="font-size:15px;margin-bottom:14px;">Quick Links</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onclick="showPage('projects',document.querySelectorAll('.nav-item')[1])" class="btn-add">📋 Go to Projects</button>
+            <button onclick="showPage('attendance',document.querySelectorAll('.nav-item')[2])" class="btn-add" style="background:var(--green);color:var(--bg)">⏱ Mark Attendance</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="page" id="page-projects">
+      <div class="page-header">
+        <h1 class="page-title">Project Board</h1>
+        <p class="page-sub" id="board-sub">Click a card to view details, add comments & attachments</p>
+      </div>
+      <div class="board-controls">
+        <div></div>
+        <button class="btn-add" id="add-task-btn" onclick="openCardModal()" style="display:none">+ Add Task</button>
+      </div>
+      <div class="board" id="kanban-board">
+        <div class="column" id="col-todo" ondragover="onDragOver(event)" ondrop="onDrop(event,'todo')">
+          <div class="col-header">
+            <div class="col-title-wrap">
+              <div class="col-dot" style="background:#4a5270"></div>
+              <span class="col-title">To Do</span>
+              <span class="col-count" id="cnt-todo">0</span>
+            </div>
+            <button class="add-card-btn admin-only-btn" onclick="openCardModal('todo')" style="display:none">+</button>
+          </div>
+          <div class="cards" id="cards-todo"></div>
+        </div>
+        <div class="column" id="col-inprogress" ondragover="onDragOver(event)" ondrop="onDrop(event,'inprogress')">
+          <div class="col-header">
+            <div class="col-title-wrap">
+              <div class="col-dot" style="background:var(--gold)"></div>
+              <span class="col-title">In Progress</span>
+              <span class="col-count" id="cnt-inprogress">0</span>
+            </div>
+            <button class="add-card-btn admin-only-btn" onclick="openCardModal('inprogress')" style="display:none">+</button>
+          </div>
+          <div class="cards" id="cards-inprogress"></div>
+        </div>
+        <div class="column" id="col-review" ondragover="onDragOver(event)" ondrop="onDrop(event,'review')">
+          <div class="col-header">
+            <div class="col-title-wrap">
+              <div class="col-dot" style="background:var(--blue)"></div>
+              <span class="col-title">In Review</span>
+              <span class="col-count" id="cnt-review">0</span>
+            </div>
+            <button class="add-card-btn admin-only-btn" onclick="openCardModal('review')" style="display:none">+</button>
+          </div>
+          <div class="cards" id="cards-review"></div>
+        </div>
+        <div class="column" id="col-done" ondragover="onDragOver(event)" ondrop="onDrop(event,'done')">
+          <div class="col-header">
+            <div class="col-title-wrap">
+              <div class="col-dot" style="background:var(--green)"></div>
+              <span class="col-title">Done</span>
+              <span class="col-count" id="cnt-done">0</span>
+            </div>
+            <button class="add-card-btn admin-only-btn" onclick="openCardModal('done')" style="display:none">+</button>
+          </div>
+          <div class="cards" id="cards-done"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATTENDANCE -->
+    <div class="page" id="page-attendance">
+      <div class="page-header">
+        <h1 class="page-title">Attendance</h1>
+        <p class="page-sub">Track your daily work hours</p>
+      </div>
+      <div class="attendance-grid">
+        <div class="checkin-card">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;">Current Time</div>
+          <div class="clock-display" id="live-clock">00:00:00</div>
+          <div id="att-status-badge" class="status-badge out"><span class="status-dot"></span> Checked Out</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:5px;">Session Duration</div>
+          <div class="timer-display" id="session-timer">00:00:00</div>
+          <div style="width:100%">
+            <button class="btn-checkin" id="checkin-btn" onclick="checkIn()">✓ Check In</button>
+            <button class="btn-checkout" id="checkout-btn" onclick="checkOut()" style="display:none">✗ Check Out</button>
+          </div>
+          <div id="checkin-time-display" style="font-size:12px;color:var(--muted);margin-top:10px;"></div>
+        </div>
+        <div class="log-card">
+          <div class="log-title">Today's Log</div>
+          <div id="att-log"><div style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0;">No activity yet today</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM -->
+    <div class="page" id="page-team">
+      <div class="page-header">
+        <h1 class="page-title">Team</h1>
+        <p class="page-sub">Nextwave Bangladesh — 7 members</p>
+      </div>
+      <div class="perf-table">
+        <table>
+          <thead><tr><th>Member</th><th>Role</th><th>Email</th><th>Status</th></tr></thead>
+          <tbody id="team-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ADD TASK MODAL (admin only) -->
+<div class="modal-overlay" id="card-modal">
+  <div class="modal">
+    <div class="modal-title">➕ Add New Task</div>
+    <div class="modal-group"><label>Task Title</label><input type="text" id="card-title-input" placeholder="e.g. Design event banner"/></div>
+    <div class="modal-group"><label>Description</label><textarea id="card-desc-input" placeholder="Task details..."></textarea></div>
+    <div class="modal-group"><label>Category</label>
+      <select id="card-tag-input">
+        <option value="Design">Design</option><option value="Marketing">Marketing</option>
+        <option value="Logistics">Logistics</option><option value="Content">Content</option>
+        <option value="Finance">Finance</option><option value="Operations">Operations</option>
+      </select>
+    </div>
+    <div class="modal-group"><label>Column</label>
+      <select id="card-col-input">
+        <option value="todo">To Do</option><option value="inprogress">In Progress</option>
+        <option value="review">In Review</option><option value="done">Done</option>
+      </select>
+    </div>
+    <div class="modal-group"><label>Due Date</label><input type="date" id="card-date-input"/></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeCardModal()">Cancel</button>
+      <button class="btn-save" onclick="saveCard()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- TASK DETAIL MODAL -->
+<div class="modal-overlay" id="task-detail-modal">
+  <div class="modal" style="width:600px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <span id="detail-tag" class="card-tag" style="font-size:11px;margin-bottom:4px;display:inline-block"></span>
+        <div class="modal-title" style="margin-bottom:0" id="detail-title">Task Title</div>
+      </div>
+      <button class="btn-cancel" onclick="closeDetailModal()" style="flex-shrink:0">✕ Close</button>
+    </div>
+
+    <div class="task-detail-section">
+      <h4>Description</h4>
+      <div class="task-desc" id="detail-desc">No description provided.</div>
+    </div>
+
+    <div class="task-detail-section">
+      <h4>📎 Attachments</h4>
+      <div class="attachment-list" id="detail-attachments"></div>
+      <label class="upload-btn" for="file-input" style="margin-top:8px">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload Attachment
+      </label>
+      <input type="file" id="file-input" multiple onchange="handleFileUpload(event)"/>
+    </div>
+
+    <div class="task-detail-section">
+      <h4>💬 Comments</h4>
+      <div class="comment-list" id="detail-comments"></div>
+      <div class="comment-input-wrap">
+        <input type="text" id="comment-input" placeholder="Add a comment..." onkeydown="if(event.key==='Enter')postComment()"/>
+        <button class="btn-comment" onclick="postComment()">Post</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════
+//  PARTICLE SYSTEM
+// ═══════════════════════
+(function(){
+  const container = document.getElementById('particles');
+  for(let i=0;i<25;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const x = Math.random()*100;
+    const dur = 6 + Math.random()*10;
+    const delay = Math.random()*10;
+    const drift = (Math.random()-0.5)*100;
+    p.style.cssText = `left:${x}%;--dur:${dur}s;--delay:${delay}s;--drift:${drift}px;opacity:0;`;
+    if(Math.random()>0.5) p.style.background='#7c3aed';
+    container.appendChild(p);
+  }
+})();
+
+// login clock
+setInterval(()=>{
+  const el = document.getElementById('login-clock-small');
+  if(el) el.textContent = new Date().toLocaleTimeString('en-US',{hour12:false});
+},1000);
+
+// ═══════════════════════
+//  DATA
+// ═══════════════════════
+const MEMBERS = [
+  { name:"Lamim Hasnine",   role:"Super Admin", email:"nextwave.lamim@gmail.com",  pass:"Lamim@2026",  color:"#f0a500", isAdmin:true  },
+  { name:"Anika Khondaker", role:"Member",      email:"nextwave.anika@gmail.com",  pass:"Anika@2026",  color:"#8b5cf6", isAdmin:false },
+  { name:"Zahid Hasan",     role:"Member",      email:"nextwave.samir@gmail.com",  pass:"Zahid@2026",  color:"#3b82f6", isAdmin:false },
+  { name:"Aqibul Hasan",    role:"Member",      email:"nextwave.aqib@gmail.com", pass:"Aqibul@2026", color:"#2ecc71", isAdmin:false },
+  { name:"Neha Rozario",    role:"Member",      email:"nextwave.neha@gmail.com",   pass:"Neha@2026",   color:"#e05c2a", isAdmin:false },
+  { name:"Israk Arko",      role:"Member",      email:"nextwave.arko@gmail.com",  pass:"Israk@2026",  color:"#e74c3c", isAdmin:false },
+  { name:"Ahnaf Aysar",     role:"Member",      email:"nextwave.aysar@gmail.com",  pass:"Ahnaf@2026",  color:"#06b6d4", isAdmin:false },
+];
+
+const TAG_COLORS = {
+  Design:    {bg:"rgba(139,92,246,0.15)",color:"#8b5cf6"},
+  Marketing: {bg:"rgba(59,130,246,0.15)",color:"#3b82f6"},
+  Logistics: {bg:"rgba(224,92,42,0.15)", color:"#e05c2a"},
+  Content:   {bg:"rgba(46,204,113,0.15)",color:"#2ecc71"},
+  Finance:   {bg:"rgba(240,165,0,0.15)", color:"#f0a500"},
+  Operations:{bg:"rgba(6,182,212,0.15)", color:"#06b6d4"},
+};
+
+let currentUser = null;
+let cards = JSON.parse(localStorage.getItem('nw_cards2')||'[]');
+let attLog = JSON.parse(localStorage.getItem('nw_att2')||'[]');
+let memberAttLogs = JSON.parse(localStorage.getItem('nw_member_att')||'{}');
+let sessionStart = null;
+let timerInterval = null;
+let clockInterval = null;
+let checkedIn = false;
+let dragId = null;
+let activeCardId = null;
+
+if(!cards.length){
+  cards=[
+    {id:'c1',title:'Design Grameen Mela Banner',desc:'Create the main event banner for all social platforms.',tag:'Design',col:'inprogress',date:'2025-07-01',assignee:'LH',attachments:[],comments:[]},
+    {id:'c2',title:'Confirm Venue Booking at EWU',desc:'Contact EWU admin to confirm hall booking.',tag:'Logistics',col:'todo',date:'2025-06-20',assignee:'LH',attachments:[],comments:[]},
+    {id:'c3',title:'Social Media Announcement Post',desc:'Write and schedule posts for all platforms.',tag:'Marketing',col:'todo',date:'2025-06-25',assignee:'LH',attachments:[],comments:[]},
+    {id:'c4',title:'Prepare Sponsor Proposal Deck',desc:'Build a polished deck for potential sponsors.',tag:'Finance',col:'review',date:'2025-06-18',assignee:'LH',attachments:[],comments:[]},
+    {id:'c5',title:'Opening Ceremony Script',desc:'Script for the MC and cultural opening act.',tag:'Content',col:'done',date:'2025-06-10',assignee:'LH',attachments:[],comments:[]},
+  ];
+  saveCards();
+}
+
+function saveCards(){ localStorage.setItem('nw_cards2',JSON.stringify(cards)); }
+function saveAtt(){ localStorage.setItem('nw_att2',JSON.stringify(attLog)); }
+function saveMemberAtt(){ localStorage.setItem('nw_member_att',JSON.stringify(memberAttLogs)); }
+
+// ═══════════════════════
+//  AUTH
+// ═══════════════════════
+function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const user  = MEMBERS.find(m=>m.email===email && m.pass===pass);
+  if(!user){
+    document.getElementById('login-error').style.display='block';
+    return;
+  }
+  currentUser = user;
+  document.getElementById('login-error').style.display='none';
+  document.getElementById('login-page').style.display='none';
+  document.getElementById('app').style.display='block';
+  initApp();
+}
+document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('login-email').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+function doLogout(){
+  if(checkedIn) checkOut();
+  clearInterval(clockInterval); clearInterval(timerInterval);
+  currentUser=null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-page').style.display='flex';
+  document.getElementById('login-email').value='';
+  document.getElementById('login-pass').value='';
+}
+
+// ═══════════════════════
+//  NAVIGATION
+// ═══════════════════════
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+}
+
+// ═══════════════════════
+//  INIT
+// ═══════════════════════
+function initApp(){
+  const initials = currentUser.name.split(' ').map(n=>n[0]).join('').toUpperCase();
+  document.getElementById('sidebar-avatar').textContent = initials;
+  document.getElementById('sidebar-avatar').style.background = currentUser.color;
+  document.getElementById('sidebar-name').textContent = currentUser.name;
+  document.getElementById('sidebar-role').textContent = currentUser.role;
+
+  const hour = new Date().getHours();
+  const greet = hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+  document.getElementById('dash-greeting').textContent = `${greet}, ${currentUser.name.split(' ')[0]}!`;
+
+  if(currentUser.isAdmin){
+    // show admin badge in nav
+    document.getElementById('nav-admin-badge').style.display='inline-block';
+    document.getElementById('dash-title').innerHTML = 'Dashboard <span class="badge-admin">SUPER ADMIN</span>';
+    document.getElementById('admin-perf-section').style.display='block';
+    document.getElementById('member-quicklinks').style.display='none';
+    // show add task btn and + buttons
+    document.getElementById('add-task-btn').style.display='flex';
+    document.querySelectorAll('.admin-only-btn').forEach(b=>b.style.display='block');
+    renderPerfTable();
+  } else {
+    document.getElementById('admin-perf-section').style.display='none';
+    document.getElementById('member-quicklinks').style.display='block';
+    document.getElementById('add-task-btn').style.display='none';
+    document.querySelectorAll('.admin-only-btn').forEach(b=>b.style.display='none');
+  }
+
+  // restore attendance state for this user
+  const myAtt = memberAttLogs[currentUser.email] || [];
+  attLog = myAtt;
+  renderBoard();
+  renderTeam();
+  renderAttLog();
+  startClock();
+  updateDashStats();
+}
+
+// ═══════════════════════
+//  CLOCK
+// ═══════════════════════
+function startClock(){
+  clearInterval(clockInterval);
+  clockInterval = setInterval(()=>{
+    const t = new Date().toLocaleTimeString('en-US',{hour12:false});
+    const el = document.getElementById('live-clock');
+    if(el) el.textContent=t;
+  },1000);
+}
+
+// ═══════════════════════
+//  KANBAN
+// ═══════════════════════
+const COLS=['todo','inprogress','review','done'];
+
+function renderBoard(){
+  COLS.forEach(col=>{
+    const container = document.getElementById('cards-'+col);
+    const colCards = cards.filter(c=>c.col===col);
+    container.innerHTML='';
+    colCards.forEach(c=>container.appendChild(buildCard(c)));
+    document.getElementById('cnt-'+col).textContent=colCards.length;
+  });
+  document.getElementById('stat-projects').textContent=cards.filter(c=>c.col!=='done').length;
+}
+
+function buildCard(c){
+  const div = document.createElement('div');
+  div.className='card';
+  // Only admin can drag
+  if(currentUser && currentUser.isAdmin){
+    div.draggable=true;
+    div.addEventListener('dragstart',()=>{ dragId=c.id; div.classList.add('dragging'); });
+    div.addEventListener('dragend',()=>div.classList.remove('dragging'));
+  }
+  div.addEventListener('click',(e)=>{ if(!e.target.classList.contains('card-delete')) openDetailModal(c.id); });
+
+  const tc = TAG_COLORS[c.tag]||{bg:'rgba(74,82,112,0.15)',color:'#4a5270'};
+  const dateStr = c.date?new Date(c.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+  const attCount = (c.attachments||[]).length;
+  const comCount = (c.comments||[]).length;
+  div.innerHTML=`
+    <span class="card-tag" style="background:${tc.bg};color:${tc.color}">${c.tag}</span>
+    <div class="card-title">${c.title}</div>
+    <div class="card-meta">
+      <div class="card-assignee" style="background:${currentUser?currentUser.color:'#4a5270'}">${c.assignee||'?'}</div>
+      <span class="card-date">${dateStr}</span>
+    </div>
+    <div class="card-footer">
+      <span>📎 ${attCount}</span>
+      <span>💬 ${comCount}</span>
+    </div>
+    ${currentUser&&currentUser.isAdmin?`<button class="card-delete" onclick="deleteCard('${c.id}')">✕</button>`:''}
+  `;
+  return div;
+}
+
+function deleteCard(id){
+  if(!currentUser||!currentUser.isAdmin) return;
+  cards=cards.filter(c=>c.id!==id);
+  saveCards(); renderBoard();
+}
+
+function onDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function onDrop(e,col){
+  e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+  if(!currentUser||!currentUser.isAdmin||!dragId) return;
+  const card=cards.find(c=>c.id===dragId);
+  if(card){ card.col=col; saveCards(); renderBoard(); }
+  dragId=null;
+}
+document.querySelectorAll('.column').forEach(col=>col.addEventListener('dragleave',()=>col.classList.remove('drag-over')));
+
+// ─── ADD TASK MODAL ───
+function openCardModal(col){
+  if(!currentUser||!currentUser.isAdmin) return;
+  document.getElementById('card-title-input').value='';
+  document.getElementById('card-desc-input').value='';
+  document.getElementById('card-date-input').value='';
+  if(col) document.getElementById('card-col-input').value=col;
+  document.getElementById('card-modal').classList.add('open');
+}
+function closeCardModal(){ document.getElementById('card-modal').classList.remove('open'); }
+function saveCard(){
+  if(!currentUser||!currentUser.isAdmin) return;
+  const title=document.getElementById('card-title-input').value.trim();
+  if(!title) return;
+  const desc=document.getElementById('card-desc-input').value.trim();
+  const tag=document.getElementById('card-tag-input').value;
+  const col=document.getElementById('card-col-input').value;
+  const date=document.getElementById('card-date-input').value;
+  const initials=currentUser.name.split(' ').map(n=>n[0]).join('');
+  cards.push({id:'c'+Date.now(),title,desc,tag,col,date,assignee:initials,attachments:[],comments:[]});
+  saveCards(); renderBoard(); closeCardModal();
+}
+
+// ─── TASK DETAIL MODAL ───
+function openDetailModal(id){
+  activeCardId=id;
+  const c=cards.find(x=>x.id===id);
+  if(!c) return;
+  const tc=TAG_COLORS[c.tag]||{bg:'rgba(74,82,112,0.15)',color:'#4a5270'};
+  document.getElementById('detail-tag').textContent=c.tag;
+  document.getElementById('detail-tag').style.background=tc.bg;
+  document.getElementById('detail-tag').style.color=tc.color;
+  document.getElementById('detail-title').textContent=c.title;
+  document.getElementById('detail-desc').textContent=c.desc||'No description provided.';
+  renderAttachments(c);
+  renderComments(c);
+  document.getElementById('task-detail-modal').classList.add('open');
+}
+function closeDetailModal(){
+  document.getElementById('task-detail-modal').classList.remove('open');
+  activeCardId=null;
+}
+
+function renderAttachments(c){
+  const el=document.getElementById('detail-attachments');
+  if(!c.attachments||!c.attachments.length){
+    el.innerHTML='<div style="color:var(--muted);font-size:13px;padding:4px 0;">No attachments yet.</div>';
+    return;
+  }
+  el.innerHTML=c.attachments.map(a=>`
+    <div class="attachment-item">
+      <span>📄</span>
+      <span>${a.name}</span>
+      <span class="att-size">${a.size}</span>
+    </div>
+  `).join('');
+}
+
+function handleFileUpload(e){
+  if(!activeCardId) return;
+  const c=cards.find(x=>x.id===activeCardId);
+  if(!c) return;
+  Array.from(e.target.files).forEach(f=>{
+    const kb=Math.round(f.size/1024);
+    const size=kb>1024?`${(kb/1024).toFixed(1)} MB`:`${kb} KB`;
+    c.attachments.push({name:f.name,size});
+  });
+  saveCards(); renderAttachments(c); renderBoard();
+  e.target.value='';
+}
+
+function renderComments(c){
+  const el=document.getElementById('detail-comments');
+  if(!c.comments||!c.comments.length){
+    el.innerHTML='<div style="color:var(--muted);font-size:13px;padding:4px 0;">No comments yet. Be the first!</div>';
+    return;
+  }
+  el.innerHTML=c.comments.map(cm=>`
+    <div class="comment-item">
+      <div class="comment-author">${cm.author}</div>
+      <div class="comment-text">${cm.text}</div>
+      <div class="comment-time">${cm.time}</div>
+    </div>
+  `).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+function postComment(){
+  if(!activeCardId||!currentUser) return;
+  const input=document.getElementById('comment-input');
+  const text=input.value.trim();
+  if(!text) return;
+  const c=cards.find(x=>x.id===activeCardId);
+  if(!c) return;
+  const time=new Date().toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  c.comments.push({author:currentUser.name,text,time});
+  saveCards(); renderComments(c); renderBoard();
+  input.value='';
+}
+
+// ═══════════════════════
+//  ATTENDANCE
+// ═══════════════════════
+function pad(n){ return String(n).padStart(2,'0'); }
+function fmtDuration(ms){
+  const s=Math.floor(ms/1000);
+  return `${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;
+}
+
+function checkIn(){
+  if(checkedIn) return;
+  checkedIn=true; sessionStart=Date.now();
+  document.getElementById('checkin-btn').style.display='none';
+  document.getElementById('checkout-btn').style.display='block';
+  document.getElementById('att-status-badge').className='status-badge in';
+  document.getElementById('att-status-badge').innerHTML='<span class="status-dot"></span> Checked In';
+  const t=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('checkin-time-display').textContent=`Checked in at ${t}`;
+  attLog.push({type:'in',time:Date.now(),user:currentUser.name});
+  memberAttLogs[currentUser.email]=attLog; saveMemberAtt(); saveAtt(); renderAttLog(); updateDashStats();
+  timerInterval=setInterval(()=>{
+    document.getElementById('session-timer').textContent=fmtDuration(Date.now()-sessionStart);
+    updateDashStats();
+  },1000);
+}
+
+function checkOut(){
+  if(!checkedIn) return;
+  checkedIn=false; clearInterval(timerInterval);
+  const duration=Date.now()-sessionStart;
+  attLog.push({type:'out',time:Date.now(),duration,user:currentUser.name});
+  memberAttLogs[currentUser.email]=attLog; saveMemberAtt(); saveAtt(); renderAttLog();
+  document.getElementById('checkin-btn').style.display='block';
+  document.getElementById('checkout-btn').style.display='none';
+  document.getElementById('att-status-badge').className='status-badge out';
+  document.getElementById('att-status-badge').innerHTML='<span class="status-dot"></span> Checked Out';
+  document.getElementById('session-timer').textContent='00:00:00';
+  document.getElementById('checkin-time-display').textContent='';
+  sessionStart=null; updateDashStats();
+}
+
+function renderAttLog(){
+  const el=document.getElementById('att-log');
+  const today=new Date().toDateString();
+  const todayLogs=attLog.filter(l=>new Date(l.time).toDateString()===today);
+  if(!todayLogs.length){ el.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0;">No activity yet today</div>'; return; }
+  el.innerHTML=todayLogs.map(l=>{
+    const t=new Date(l.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    if(l.type==='in') return `<div class="log-item"><div class="log-type"><span>✅</span><span>Checked In</span></div><span style="color:var(--muted)">${t}</span></div>`;
+    return `<div class="log-item"><div class="log-type"><span>🔴</span><span>Checked Out</span></div><div style="text-align:right"><div style="color:var(--muted);font-size:12px">${t}</div><div class="log-duration">${fmtDuration(l.duration)}</div></div></div>`;
+  }).join('');
+}
+
+function updateDashStats(){
+  if(checkedIn){
+    document.getElementById('stat-status').textContent='Checked In ✅';
+    document.getElementById('stat-status-badge').textContent='Online';
+    document.getElementById('stat-status-badge').style.cssText='background:rgba(0,229,160,0.1);color:var(--green)';
+  } else {
+    document.getElementById('stat-status').textContent='Not checked in';
+    document.getElementById('stat-status-badge').textContent='Offline';
+    document.getElementById('stat-status-badge').style.cssText='background:rgba(255,77,106,0.1);color:var(--red)';
+  }
+  const today=new Date().toDateString();
+  let totalMs=0;
+  attLog.filter(l=>new Date(l.time).toDateString()===today&&l.type==='out').forEach(l=>totalMs+=l.duration||0);
+  if(checkedIn&&sessionStart) totalMs+=Date.now()-sessionStart;
+  document.getElementById('stat-hours').textContent=`${Math.floor(totalMs/3600000)}h ${Math.floor((totalMs%3600000)/60000)}m`;
+}
+
+// ═══════════════════════
+//  ADMIN PERFORMANCE TABLE
+// ═══════════════════════
+function renderPerfTable(){
+  const today=new Date().toDateString();
+  const tbody=document.getElementById('perf-tbody');
+  tbody.innerHTML=MEMBERS.map(m=>{
+    const initials=m.name.split(' ').map(n=>n[0]).join('');
+    const mLog=memberAttLogs[m.email]||[];
+    const todayLogs=mLog.filter(l=>new Date(l.time).toDateString()===today);
+    let totalMs=0;
+    todayLogs.filter(l=>l.type==='out').forEach(l=>totalMs+=l.duration||0);
+    const h=Math.floor(totalMs/3600000), mn=Math.floor((totalMs%3600000)/60000);
+    const hoursStr=totalMs?`${h}h ${mn}m`:'—';
+    const checkInLog=todayLogs.find(l=>l.type==='in');
+    const checkInTime=checkInLog?new Date(checkInLog.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}):'—';
+    const doneTasks=cards.filter(c=>c.col==='done').length;
+    const isOnline=m.email===currentUser.email&&checkedIn;
+    const pct=Math.min(100,Math.round(totalMs/144000));
+    return `<tr>
+      <td><div class="member-cell">
+        <div class="member-av" style="background:${m.color}">${initials}</div>
+        <span>${m.name}${m.isAdmin?'<span style="font-size:9px;color:var(--gold);margin-left:4px;">★</span>':''}</span>
+      </div></td>
+      <td style="color:var(--muted);font-size:12px">${m.role}</td>
+      <td><div style="display:flex;align-items:center;gap:8px">${hoursStr}<div class="prog-bar-wrap"><div class="prog-bar" style="width:${pct}%"></div></div></div></td>
+      <td style="color:var(--accent);font-weight:600">${doneTasks}</td>
+      <td style="color:var(--muted);font-size:12px">${checkInTime}</td>
+      <td><span class="online-dot" style="background:${isOnline?'var(--green)':'var(--muted)'}"></span>${isOnline?'<span style="color:var(--green)">Online</span>':'<span style="color:var(--muted)">Offline</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════
+//  TEAM PAGE
+// ═══════════════════════
+function renderTeam(){
+  const tbody=document.getElementById('team-tbody');
+  tbody.innerHTML=MEMBERS.map(m=>{
+    const initials=m.name.split(' ').map(n=>n[0]).join('');
+    const isMe=m.email===currentUser.email;
+    return `<tr>
+      <td><div class="member-cell">
+        <div class="member-av" style="background:${m.color}">${initials}</div>
+        <span>${m.name} ${isMe?'<span style="font-size:10px;color:var(--accent)">(You)</span>':''}</span>
+      </div></td>
+      <td style="color:var(--muted);font-size:12px">${m.role}</td>
+      <td style="color:var(--muted);font-size:12px">${m.email}</td>
+      <td><span class="online-dot" style="background:${isMe&&checkedIn?'var(--green)':'var(--muted)'}"></span>${isMe&&checkedIn?'<span style="color:var(--green)">Online</span>':'<span style="color:var(--muted)">Offline</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// refresh admin perf every 30s
+setInterval(()=>{ if(currentUser&&currentUser.isAdmin) renderPerfTable(); },30000);
+</script>
+</body>
+</html>
